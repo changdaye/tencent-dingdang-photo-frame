@@ -1,30 +1,33 @@
 # Tencent Dingdang Photo Frame
 
-Turn a flashed Tencent Dingdang device into a boot-to-frame Android photo appliance.
+Turn a flashed Tencent Dingdang device into a browser-first photo appliance.
 
 ## Components
 
-- `app/`: Android TV-style client APK
-- `workers/`: Cloudflare Worker for authentication and latest-image selection
+- `app/`: Android TV-style client APK (kept for future device-native use)
+- `workers/`: Cloudflare Worker for authentication, latest-image selection, and browser UI
 - `docs/`: design and planning artifacts
 
 ## Current status
 
 - Approved product spec and implementation plan are checked in
-- Cloudflare Worker scaffold and tests are implemented
-- Android application scaffold and core source files are implemented
+- Cloudflare Worker is deployed on the Apple account and now serves both the API and the browser-first photo frame UI
 - Local Worker validation has been exercised against the existing Tencent COS setup with the sample `phone / phone123` folder + password marker
-- Android unit tests run locally with Java 17 and Android SDK command-line tools
+- Android application scaffold and core source files are implemented, but the recommended first-pass delivery is the browser flow because the device browser works while the firmware blocks normal APK install / ADB workflows
 
-## Intended behavior
+## Browser-first usage
 
-- First-run local configuration on the device
-- Persistent storage of Worker URL, username, and password (the URL can be left blank to use the built-in default Cloudflare domain)
-- Boot auto-start
-- Full-screen image display with crop-to-fill behavior
-- Automatic refresh every 2 hours
-- Error page for auth, fetch, or no-image failures
-- Public image delivery through a Cloudflare Worker URL instead of exposing the raw Tencent COS URL
+Open this URL in the Dingdang device browser:
+
+- `https://tencent-dingdang-photo-frame-apple.5frhvfq5s2.workers.dev`
+
+Then:
+
+- enter the username
+- enter the password
+- start the frame
+- the page will auto-refresh every 2 hours
+- the image is still served from the Cloudflare domain rather than exposing the raw Tencent COS URL
 
 ## Local development
 
@@ -50,6 +53,10 @@ Then run:
 ./gradlew testDebugUnitTest
 ```
 
+## Live Cloudflare endpoint
+
+- Default Worker URL: `https://tencent-dingdang-photo-frame-apple.5frhvfq5s2.workers.dev`
+
 ## Repository structure
 
 - `docs/superpowers/specs/2026-04-28-tencent-dingdang-photo-frame-design.md`
@@ -58,8 +65,3 @@ Then run:
 ## License
 
 MIT
-
-
-## Live Cloudflare endpoint
-
-- Default Worker URL: `https://tencent-dingdang-photo-frame-apple.5frhvfq5s2.workers.dev`

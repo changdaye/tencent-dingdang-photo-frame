@@ -11,6 +11,14 @@ const env = {
 };
 
 describe('worker routes', () => {
+  it('serves the browser homepage', async () => {
+    const response = await worker.fetch(new Request('https://frame.example.workers.dev/'), env);
+    const text = await response.text();
+    expect(response.status).toBe(200);
+    expect(text).toContain('叮当电子相框');
+    expect(text).toContain('/frame');
+  });
+
   it('rejects unsupported methods on /frame', async () => {
     const request = new Request('https://example.com/frame', { method: 'GET' });
     const response = await worker.fetch(request, env);
