@@ -1,0 +1,6 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tencent-dingdang-photo-frame",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-28"
+}
