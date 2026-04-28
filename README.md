@@ -19,7 +19,7 @@ Turn a flashed Tencent Dingdang device into a boot-to-frame Android photo applia
 ## Intended behavior
 
 - First-run local configuration on the device
-- Persistent storage of Worker URL, username, and password
+- Persistent storage of Worker URL, username, and password (the URL can be left blank to use the built-in default Cloudflare domain)
 - Boot auto-start
 - Full-screen image display with crop-to-fill behavior
 - Automatic refresh every 2 hours
@@ -58,3 +58,8 @@ Then run:
 ## License
 
 MIT
+
+
+## Live Cloudflare endpoint
+
+- Default Worker URL: `https://tencent-dingdang-photo-frame-apple.5frhvfq5s2.workers.dev`

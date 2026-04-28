@@ -19,7 +19,7 @@ class HttpFrameApi(
   private val json: Json = Json { ignoreUnknownKeys = true },
 ) : FrameApi {
   override suspend fun fetchFrame(config: AppConfig): FrameResult {
-    val connection = (URL(config.baseUrl.trimEnd('/') + "/frame").openConnection() as HttpURLConnection).apply {
+    val connection = (URL(config.resolvedBaseUrl().trimEnd('/') + "/frame").openConnection() as HttpURLConnection).apply {
       requestMethod = "POST"
       setRequestProperty("Content-Type", "application/json")
       doOutput = true

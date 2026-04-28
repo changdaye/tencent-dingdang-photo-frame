@@ -8,6 +8,12 @@ import org.junit.Test
 
 class FrameRepositoryTest {
   @Test
+  fun blankBaseUrlFallsBackToDefaultCloudflareDomain() {
+    val config = AppConfig("   ", "phone", "phone123")
+    assertEquals(DEFAULT_FRAME_BASE_URL, config.resolvedBaseUrl())
+  }
+
+  @Test
   fun refreshReturnsShowingImageWhenWorkerReturnsImageUrl() = runBlocking {
     val configStore = TestStores.newConfigStore()
     val repository = FrameRepository(
