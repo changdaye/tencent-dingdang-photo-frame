@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  repo-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify required project docs exist
+        run: |
+          test -f README.md
+          test -f LICENSE
+          test -f docs/superpowers/specs/2026-04-28-tencent-dingdang-photo-frame-design.md
+          test -f docs/superpowers/plans/2026-04-28-tencent-dingdang-photo-frame.md

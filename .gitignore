@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Android / IntelliJ
+.gradle/
+.idea/
+*.iml
+local.properties
+build/
+app/build/
+captures/
+
+# Node / Worker
+workers/node_modules/
+workers/.wrangler/
+workers/dist/
+
+# Logs
+*.log
