@@ -12,6 +12,7 @@ export function parseConfig(env: Partial<Env>): WorkerConfig {
     cosBaseUrl: baseUrl,
     passwordFileSuffix: env.PASSWORD_FILE_SUFFIX?.trim() || '.txt',
     requestTimeoutMs: Number.parseInt(env.REQUEST_TIMEOUT_MS?.trim() || '20000', 10) || 20000,
+    imageSigningSecret: env.IMAGE_SIGNING_SECRET?.trim() || env.TENCENT_COS_SECRET_KEY?.trim() || '',
   };
 }
 

@@ -9,6 +9,11 @@ export interface FrameSuccessResponse {
   updatedAt: string;
 }
 
+export interface ResolvedFrame {
+  key: string;
+  updatedAt: string;
+}
+
 export type FrameErrorCode =
   | 'AUTH_FAILED'
   | 'NO_IMAGE'
@@ -52,6 +57,7 @@ export interface WorkerConfig {
   cosBaseUrl: string;
   passwordFileSuffix: string;
   requestTimeoutMs: number;
+  imageSigningSecret: string;
 }
 
 export interface Env {
@@ -62,4 +68,5 @@ export interface Env {
   TENCENT_COS_BASE_URL?: string;
   PASSWORD_FILE_SUFFIX?: string;
   REQUEST_TIMEOUT_MS?: string;
+  IMAGE_SIGNING_SECRET?: string;
 }

@@ -24,6 +24,7 @@ Turn a flashed Tencent Dingdang device into a boot-to-frame Android photo applia
 - Full-screen image display with crop-to-fill behavior
 - Automatic refresh every 2 hours
 - Error page for auth, fetch, or no-image failures
+- Public image delivery through a Cloudflare Worker URL instead of exposing the raw Tencent COS URL
 
 ## Local development
 

@@ -20,3 +20,19 @@ The Worker currently accepts either of these COS marker layouts:
 2. `<password>.txt`
 
 The first match authorizes access to the `<username>/` image folder.
+
+
+## Public image delivery
+
+The app never needs to see the raw Tencent COS URL. `POST /frame` now returns a signed Cloudflare `GET /image?...` URL, and the Worker fetches the COS object, serves the bytes from the Cloudflare domain, and caches the response at the edge.
+
+
+## Deploy to the Apple account target
+
+When Apple-account Cloudflare credentials are available locally, deploy with:
+
+```bash
+npm run deploy:apple
+```
+
+This uses the Wrangler environment `13212266802-apple` and publishes the Worker name `tencent-dingdang-photo-frame-apple`.

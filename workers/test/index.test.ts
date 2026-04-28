@@ -10,8 +10,8 @@ const env = {
   PASSWORD_FILE_SUFFIX: '.txt',
 };
 
-describe('POST /frame', () => {
-  it('rejects unsupported methods', async () => {
+describe('worker routes', () => {
+  it('rejects unsupported methods on /frame', async () => {
     const request = new Request('https://example.com/frame', { method: 'GET' });
     const response = await worker.fetch(request, env);
     expect(response.status).toBe(405);
@@ -33,10 +33,28 @@ describe('POST /frame', () => {
       body: JSON.stringify({ username: 'phone', password: 'phone123' }),
     });
     const response = await worker.fetch(request, env);
-    const body = await response.json();
+    const body = await response.json() as any;
     expect(response.status).toBe(401);
     expect(body).toMatchObject({ ok: false, code: 'AUTH_FAILED' });
-    expect(fetchSpy).toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it('returns a cloudflare image URL instead of the COS origin URL', async () => {
+    const png = new Uint8Array([137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,5,120,0,0,3,132,8,2,0,0,0]);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(new Response(`<?xml version="1.0"?><ListBucketResult><Contents><Key>phone/a.png</Key><LastModified>2026-04-28T03:18:21.000Z</LastModified><Size>29</Size></Contents></ListBucketResult>`, { status: 200 }))
+      .mockResolvedValueOnce(new Response(png, { status: 200 }));
+    const request = new Request('https://frame.example.workers.dev/frame', {
+      method: 'POST',
+      body: JSON.stringify({ username: 'phone', password: 'phone123' }),
+    });
+    const response = await worker.fetch(request, env);
+    const body = await response.json() as any;
+    expect(response.status).toBe(200);
+    expect(body.ok).toBe(true);
+    expect(body.imageUrl).toContain('https://frame.example.workers.dev/image?');
+    expect(body.imageUrl).not.toContain('myqcloud.com');
     fetchSpy.mockRestore();
   });
 });

@@ -93,6 +93,11 @@ async function cosRequest(config: WorkerConfig, method: string, url: URL, conten
 export class TencentCosGateway implements CosGateway {
   constructor(private readonly config: WorkerConfig) {}
 
+  async fetchObject(key: string): Promise<Response> {
+    const url = new URL(`${this.config.cosBaseUrl.replace(/\/+$/, '')}/${key}`);
+    return cosRequest(this.config, 'GET', url);
+  }
+
   async objectExists(key: string) {
     const url = new URL(`${this.config.cosBaseUrl.replace(/\/+$/, '')}/${key}`);
     const response = await cosRequest(this.config, 'HEAD', url);
