@@ -17,3 +17,6 @@ workers/dist/
 
 # Logs
 *.log
+
+# Git worktrees
+.worktrees/
