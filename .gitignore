@@ -20,3 +20,7 @@ workers/dist/
 
 # Git worktrees
 .worktrees/
+
+# Local worker env
+workers/.dev.vars
+workers/.env

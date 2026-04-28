@@ -7,6 +7,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
+import kotlin.io.path.createTempDirectory
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppConfigStoreTest {
@@ -15,7 +16,7 @@ class AppConfigStoreTest {
     val store = AppConfigStore(
       PreferenceDataStoreFactory.create(
         scope = backgroundScope,
-        produceFile = { File(createTempDir(), "config.preferences_pb") },
+        produceFile = { createTempDirectory("dingdang-config").resolve("config.preferences_pb").toFile() },
       ),
     )
     val config = AppConfig("https://worker.example.com", "album-a", "secret")

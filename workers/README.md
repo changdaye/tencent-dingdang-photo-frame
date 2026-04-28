@@ -1,16 +1,22 @@
 # Cloudflare Worker
 
-This Worker validates a username/password pair against Tencent COS conventions and returns the latest eligible image URL.
+This Worker validates a username/password pair against Tencent COS and returns the latest eligible image URL.
 
-## Expected environment variables
+## Environment variables
 
-- `COS_BUCKET_BASE_URL`: Public base URL of the COS bucket, for example `https://bucket-name.cos.ap-guangzhou.myqcloud.com`
-- `PASSWORD_FILE_SUFFIX` (optional): Password marker suffix, defaults to `.txt`
+- `TENCENT_COS_SECRET_ID`
+- `TENCENT_COS_SECRET_KEY`
+- `TENCENT_COS_BUCKET`
+- `TENCENT_COS_REGION`
+- `TENCENT_COS_BASE_URL` (optional if bucket + region are present)
+- `PASSWORD_FILE_SUFFIX` (optional, defaults to `.txt`)
+- `REQUEST_TIMEOUT_MS` (optional, defaults to `20000`)
 
-## Current assumptions
+## Password marker lookup
 
-- The bucket can respond to `HEAD /<username>/<password>.txt` for auth-marker existence checks
-- The bucket can list objects with `GET /?prefix=<username>/`
-- Images are directly readable from the returned object URLs
+The Worker currently accepts either of these COS marker layouts:
 
-If the production bucket requires signed listing requests, replace `HttpCosGateway` with a signed adapter while keeping the same `CosGateway` interface.
+1. `<username>/<password>.txt`
+2. `<password>.txt`
+
+The first match authorizes access to the `<username>/` image folder.

@@ -28,8 +28,8 @@ class HttpFrameApi(
     val payload = RequestBody(config.username, config.password)
     connection.outputStream.bufferedWriter().use { it.write(json.encodeToString(RequestBody.serializer(), payload)) }
 
-    return connection.inputOrError().use { bodyText ->
-      val body = json.decodeFromString(ResponseBody.serializer(), bodyText)
+    return connection.inputOrError().use { reader ->
+      val body = json.decodeFromString(ResponseBody.serializer(), reader.readText())
       if (body.ok && body.imageUrl != null && body.updatedAt != null) {
         FrameResult.Success(body.imageUrl, body.updatedAt)
       } else {

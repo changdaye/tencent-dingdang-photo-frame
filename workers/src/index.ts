@@ -1,5 +1,6 @@
 import { FrameError, assertAuthorized } from './auth';
-import { HttpCosGateway } from './cos';
+import { assertCosConfigured, parseConfig } from './config';
+import { TencentCosGateway } from './cos';
 import { resolveLatestFrame } from './frame-service';
 import type { Env, FrameRequestBody, FrameResponse } from './types';
 
@@ -27,20 +28,24 @@ export default {
       return badRequest('Request body must be valid JSON');
     }
 
-    if (!body.username?.trim() || !body.password?.trim()) {
+    const username = body.username?.trim();
+    const password = body.password?.trim();
+    if (!username || !password) {
       return badRequest('username and password are required');
     }
 
     try {
-      const cos = new HttpCosGateway(env);
-      await assertAuthorized(body.username.trim(), body.password.trim(), cos, env.PASSWORD_FILE_SUFFIX ?? '.txt');
-      return json(await resolveLatestFrame(body.username.trim(), cos));
+      const config = parseConfig(env);
+      assertCosConfigured(config);
+      const cos = new TencentCosGateway(config);
+      await assertAuthorized(username, password, cos, config.passwordFileSuffix);
+      return json(await resolveLatestFrame(username, cos));
     } catch (error) {
       if (error instanceof FrameError) {
         const status = error.code === 'AUTH_FAILED' ? 401 : error.code === 'NO_IMAGE' ? 404 : 502;
         return json({ ok: false, code: error.code, message: error.message }, status);
       }
-      return json({ ok: false, code: 'INVALID_RESPONSE', message: 'Unexpected server error' }, 500);
+      return json({ ok: false, code: 'INVALID_RESPONSE', message: error instanceof Error ? error.message : 'Unexpected server error' }, 500);
     }
   },
 };

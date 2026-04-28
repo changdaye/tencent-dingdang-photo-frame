@@ -33,12 +33,33 @@ export interface CosImageObject {
   url: string;
 }
 
+export interface CosObjectSummary {
+  key: string;
+  updatedAt?: string;
+  size?: number;
+}
+
 export interface CosGateway {
   objectExists(key: string): Promise<boolean>;
   listImages(prefix: string): Promise<CosImageObject[]>;
 }
 
+export interface WorkerConfig {
+  cosSecretId: string;
+  cosSecretKey: string;
+  cosBucket: string;
+  cosRegion: string;
+  cosBaseUrl: string;
+  passwordFileSuffix: string;
+  requestTimeoutMs: number;
+}
+
 export interface Env {
-  COS_BUCKET_BASE_URL: string;
+  TENCENT_COS_SECRET_ID?: string;
+  TENCENT_COS_SECRET_KEY?: string;
+  TENCENT_COS_BUCKET?: string;
+  TENCENT_COS_REGION?: string;
+  TENCENT_COS_BASE_URL?: string;
   PASSWORD_FILE_SUFFIX?: string;
+  REQUEST_TIMEOUT_MS?: string;
 }

@@ -1,6 +1,7 @@
 package io.github.changdaye.dingdangframe.data
 
 import io.github.changdaye.dingdangframe.ui.AppState
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -18,7 +19,7 @@ class FrameRepositoryTest {
 
     val state = repository.refresh(AppConfig("https://worker.example.com", "album-a", "secret"))
     assertEquals(AppState.ShowingImage("https://example.com/a.jpg", "2026-04-28T10:00:00Z"), state)
-    assertEquals("https://example.com/a.jpg", configStore.snapshotFlow.firstValue()?.imageUrl)
+    assertEquals("https://example.com/a.jpg", configStore.snapshotFlow.first()?.imageUrl)
   }
 
   @Test

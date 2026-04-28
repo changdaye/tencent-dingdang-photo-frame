@@ -13,7 +13,8 @@ Turn a flashed Tencent Dingdang device into a boot-to-frame Android photo applia
 - Approved product spec and implementation plan are checked in
 - Cloudflare Worker scaffold and tests are implemented
 - Android application scaffold and core source files are implemented
-- Local Android verification is currently blocked on this machine because Java + Android SDK are not installed yet
+- Local Worker validation has been exercised against the existing Tencent COS setup with the sample `phone / phone123` folder + password marker
+- Android unit tests run locally with Java 17 and Android SDK command-line tools
 
 ## Intended behavior
 
