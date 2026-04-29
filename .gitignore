@@ -20,3 +20,12 @@ workers/dist/
 
 # Git worktrees
 .worktrees/
+
+# Local worker env
+workers/.dev.vars
+workers/.env
+
+# Python server artifacts
+server/__pycache__/
+*.pyc
+deploy/volcengine/.env
