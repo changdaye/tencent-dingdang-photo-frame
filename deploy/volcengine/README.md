@@ -1,53 +1,24 @@
-# Volcengine server edition
+# Volcengine deployment helpers
 
-This directory contains a plain Python HTTP server version of the Dingdang browser photo frame for a regular Linux server.
+This directory is only the deployment helper surface for the current server-first Dingdang photo frame path.
 
-## What it does
+## Source of truth
 
-- serves a browser-first photo frame page from your server IP
-- checks Tencent COS for the configured `name` values
-- filters for the latest eligible image (width > 1280 and height > 800)
-- writes the selected result into a local cache file on startup and every 2 hours after that
-- serves requests from the cache instead of filtering synchronously on every page load
-- supports direct browser entry with `?name=<value>` and treats `password = name`
+- runtime implementation: `server/app.py`
+- runtime behavior docs: `server/README.md`
 
-## Required environment variables
+## Files here
 
-- `TENCENT_COS_SECRET_ID`
-- `TENCENT_COS_SECRET_KEY`
+- `run.sh` — helper to start the Python server with `.env`
+- `stop.sh` — helper to stop the Python server
+- `app.py` — deployable copy of `server/app.py` for server upload workflows
 
-Recommended / optional:
+## Current production-style URL shape
 
-- `TENCENT_COS_BUCKET` (default `cloudflare-static-1252612849`)
-- `TENCENT_COS_REGION` (default `na-ashburn`)
-- `TENCENT_COS_BASE_URL` (default derived from bucket + region)
-- `PASSWORD_FILE_SUFFIX` (default `.txt`)
-- `REQUEST_TIMEOUT_MS` (default `20000`)
-- `PORT` (default `18082`)
-- `BIND_HOST` (default `0.0.0.0`)
-- `PUBLIC_BASE_URL` (for example `http://115.191.25.146:18082`)
-- `DEFAULT_NAMES` (comma-separated names to precompute at startup, default `phone`)
-- `CACHE_DIR` (default `/root/dingdang-frame-cache`)
-
-## Run locally
-
-```bash
-export TENCENT_COS_SECRET_ID=...
-export TENCENT_COS_SECRET_KEY=...
-export TENCENT_COS_BUCKET=cloudflare-static-1252612849
-export TENCENT_COS_REGION=na-ashburn
-export TENCENT_COS_BASE_URL=https://cloudflare-static-1252612849.cos.na-ashburn.myqcloud.com
-export PUBLIC_BASE_URL=http://127.0.0.1:18082
-export DEFAULT_NAMES=phone
-python3 server/app.py
-```
-
-## Browser usage
-
-Open:
-
-```
+```text
 http://<server-ip>:18082?name=phone
 ```
 
-The server treats `username = phone` and `password = phone`, loads the cached image URL, and renders a pure full-screen frame page.
+## Note
+
+If behavior changes, update `server/app.py` first and then refresh the deploy copy in this directory.

@@ -2,34 +2,57 @@
 
 Turn a flashed Tencent Dingdang device into a browser-first photo appliance.
 
-## Components
+## Current recommended path
 
-- `app/`: Android TV-style client APK (kept for future device-native use)
-- `workers/`: Cloudflare Worker for authentication, latest-image selection, and browser UI
-- `docs/`: design and planning artifacts
+The Dingdang firmware currently blocks reliable APK installation and ADB workflows, so the primary delivery path is the **Volcengine server edition** under `server/` plus the deployment helpers under `deploy/volcengine/`.
 
-## Current status
+Open this URL on the device browser:
 
-- Approved product spec and implementation plan are checked in
-- Cloudflare Worker is deployed on the Apple account and now serves both the API and the browser-first photo frame UI
-- Local Worker validation has been exercised against the existing Tencent COS setup with the sample `phone / phone123` folder + password marker
-- Android application scaffold and core source files are implemented, but the recommended first-pass delivery is the browser flow because the device browser works while the firmware blocks normal APK install / ADB workflows
+- `http://115.191.25.146:18082?name=phone`
 
-## Browser-first usage
+Behavior:
 
-Open this URL in the Dingdang device browser:
+- pure full-screen frame page
+- startup cache warm-up
+- background refresh every 2 hours
+- request path reads only cached image results
+- `name=<value>` means `username = value` and `password = value`
 
-- `https://tencent-dingdang-photo-frame-apple.5frhvfq5s2.workers.dev`
+## Repository layout
 
-Then:
+- `server/` — current browser-first Python server used for the Volcengine deployment
+- `deploy/volcengine/` — helper files for deploying the server edition
+- `workers/` — earlier Cloudflare Worker implementation, still kept for reference / future reuse
+- `app/` — Android client prototype, currently not the recommended delivery path
+- `docs/` — design and planning artifacts
 
-- enter the username
-- enter the password
-- start the frame
-- the page will auto-refresh every 2 hours
-- the image is still served from the Cloudflare domain rather than exposing the raw Tencent COS URL
+## Development status
 
-## Local development
+- browser-first Volcengine server path is the active delivery lane
+- Cloudflare Worker version remains in the repo for reference
+- Android client scaffold remains in the repo for future device-native work
+
+## Quick start for local server work
+
+```bash
+export TENCENT_COS_SECRET_ID=...
+export TENCENT_COS_SECRET_KEY=...
+export TENCENT_COS_BUCKET=cloudflare-static-1252612849
+export TENCENT_COS_REGION=na-ashburn
+export TENCENT_COS_BASE_URL=https://cloudflare-static-1252612849.cos.na-ashburn.myqcloud.com
+export PUBLIC_BASE_URL=http://127.0.0.1:18082
+export DEFAULT_NAMES=phone
+python3 server/app.py
+```
+
+## Verification shortcuts
+
+### Server
+
+```bash
+python3 -m py_compile server/app.py
+curl http://127.0.0.1:18082/health
+```
 
 ### Worker
 
@@ -37,30 +60,14 @@ Then:
 cd workers
 npm install
 npm test
-npx tsc --noEmit
+npm run typecheck
 ```
 
 ### Android
 
-Prerequisites:
-
-- Java 17+
-- Android SDK with API 35 platform
-
-Then run:
-
 ```bash
 ./gradlew testDebugUnitTest
 ```
-
-## Live Cloudflare endpoint
-
-- Default Worker URL: `https://tencent-dingdang-photo-frame-apple.5frhvfq5s2.workers.dev`
-
-## Repository structure
-
-- `docs/superpowers/specs/2026-04-28-tencent-dingdang-photo-frame-design.md`
-- `docs/superpowers/plans/2026-04-28-tencent-dingdang-photo-frame.md`
 
 ## License
 
